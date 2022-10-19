@@ -12,9 +12,11 @@ const io = new Server(server, {
   },
 });
 
-// app.get("/", (req, res) => {
-//   res.sendFile(__dirname + "/index.html");
-// });
+app.use(express.static("static"));
+
+app.get("/", (req, res) => {
+  res.sendFile(__dirname + "static/index.html");
+});
 
 app.get("/health", (req, res) => {
   res.status(200).send("OK");

@@ -1,0 +1,29 @@
+.pass {
+  color: green;
+}
+
+.fail {
+  color: red;
+}
+
+.flex {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.p-1 {
+  padding: 1rem;
+}
+
+.py-1 {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+.px-1 {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}

@@ -12,8 +12,12 @@ const io = new Server(server, {
   },
 });
 
-app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/index.html");
+// app.get("/", (req, res) => {
+//   res.sendFile(__dirname + "/index.html");
+// });
+
+app.get("/health", (req, res) => {
+  res.status(200).send("OK");
 });
 
 const feederClient = [];

@@ -4,9 +4,10 @@ import { useData } from "../context/dataContext";
 import { getNoOfSteps } from "../utills";
 
 const Controls = () => {
+  const { handleReset } = useData();
   return (
     <div>
-      <button>RESET</button>
+      <button onClick={handleReset}>RESET</button>
       <div
         style={{
           display: "flex",

@@ -1,16 +1,17 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
-import { SocketProvider } from "./context/socketContext";
+// import { SocketProvider } from "./context/socketContext";
+import { WebSocketProvider } from "./context/webSocketContext";
 import { DataProvider } from "./context/dataContext";
 import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <SocketProvider>
+    <WebSocketProvider>
       <DataProvider>
         <App />
       </DataProvider>
-    </SocketProvider>
+    </WebSocketProvider>
   </React.StrictMode>
 );

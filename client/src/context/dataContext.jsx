@@ -2,6 +2,7 @@ import React from "react";
 import { STATIONS } from "../constants";
 import { createNewElement, getNoOfSteps, updateElement } from "../utills";
 import { useSocket } from "./socketContext";
+import { useWebSocket } from "./webSocketContext";
 
 const dataContext = React.createContext();
 
@@ -26,40 +27,43 @@ const DataProvider = ({ children }) => {
   const [data, setData] = React.useState([]);
   //   const [elementAt, dispatch] = React.useReducer(reducer, initialState);
 
-  const {
-    feederSocket,
-    inspectionSocket,
-    bufferSocket,
-    processSocket,
-    assemblySocket,
-    sortingSocket,
-  } = useSocket();
+  // const {
+  //   feederSocket,
+  //   inspectionSocket,
+  //   bufferSocket,
+  //   processSocket,
+  //   assemblySocket,
+  //   sortingSocket,
+  // } = useSocket();
 
+  const wss = useWebSocket();
   // send message to server
   const sendMessage = (data) => {
     console.log("sendMessage", data);
-    switch (data.station) {
-      case STATIONS.feeder:
-        feederSocket.emit("data", data);
-        break;
-      case STATIONS.inspection:
-        inspectionSocket.emit("data", data);
-        break;
-      case STATIONS.buffer:
-        bufferSocket.emit("data", data);
-        break;
-      case STATIONS.process:
-        processSocket.emit("data", data);
-        break;
-      case STATIONS.assembly:
-        assemblySocket.emit("data", data);
-        break;
-      case STATIONS.sorting:
-        sortingSocket.emit("data", data);
-        break;
-      default:
-        break;
-    }
+    // switch (data.station) {
+    //   case STATIONS.feeder:
+    //     feederSocket.emit("data", data);
+    //     break;
+    //   case STATIONS.inspection:
+    //     inspectionSocket.emit("data", data);
+    //     break;
+    //   case STATIONS.buffer:
+    //     bufferSocket.emit("data", data);
+    //     break;
+    //   case STATIONS.process:
+    //     processSocket.emit("data", data);
+    //     break;
+    //   case STATIONS.assembly:
+    //     assemblySocket.emit("data", data);
+    //     break;
+    //   case STATIONS.sorting:
+    //     sortingSocket.emit("data", data);
+    //     break;
+    //   default:
+    //     break;
+    // }
+    let payload = `${data.station},${data.step},${data.elementType},${data.status}`;
+    wss.send(payload);
   };
 
   //   funtions
@@ -109,10 +113,15 @@ const DataProvider = ({ children }) => {
     });
   };
 
+  const handleReset = () => {
+    setData([]);
+  };
+
   const value = {
     elements: data,
     // elementAt,
     handleStepsButton,
+    handleReset,
   };
 
   return <dataContext.Provider value={value}>{children}</dataContext.Provider>;

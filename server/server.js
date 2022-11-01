@@ -4,8 +4,11 @@ const express = require("express");
 const app = express();
 const http = require("http");
 const server = http.createServer(app);
-const { Server } = require("socket.io");
-const io = new Server(server, {
+const ws = require("ws");
+
+// wss server with cors
+const wss = new ws.Server({
+  server,
   cors: {
     origin: process.env.CLIENT_URL,
     methods: ["GET", "POST"],
@@ -22,97 +25,27 @@ app.get("/health", (req, res) => {
   res.status(200).send("OK");
 });
 
-const feederClient = [];
+const clients = [];
 
-// namespace
-//feeder namespace
-const feederNsp = io.of("/feeder");
-feederNsp.on("connection", (socket) => {
-  feederClient.push(socket.id);
-  console.log("a user connected to feeder", feederClient.length);
+wss.on("connection", (ws) => {
+  clients.push(ws);
 
-  socket.on("data", (data) => {
+  ws.on("message", (data) => {
     console.log(data);
-    // broadcast to all clients in the namespace
-    feederNsp.emit("data", data);
+    // broadcast to all clients
+    wss.clients.forEach((client) => {
+      if (client.readyState === ws.OPEN) {
+        client.send(data.toString());
+      }
+    });
   });
 
-  socket.on("disconnect", () => {
-    feederClient.pop(socket.id);
-    console.log("user disconnected from feeder", feederClient.length);
+  ws.on("close", () => {
+    clients.pop(ws);
+    console.log("user disconnected", clients.length);
   });
 });
 
-// inspection namespace
-const inspectionNsp = io.of("/inspection");
-inspectionNsp.on("connection", (socket) => {
-  console.log("a user connected to inspection");
-  socket.on("data", (data) => {
-    console.log(data);
-    // broadcast to all clients in the namespace
-    inspectionNsp.emit("data", data);
-  });
-  socket.on("disconnect", () => {
-    console.log("user disconnected from inspection");
-  });
-});
-
-// buffer namespace
-const bufferNsp = io.of("/buffer");
-bufferNsp.on("connection", (socket) => {
-  console.log("a user connected to buffer");
-  socket.on("data", (data) => {
-    console.log(data);
-    // broadcast to all clients in the namespace
-    bufferNsp.emit("data", data);
-  });
-  socket.on("disconnect", () => {
-    console.log("user disconnected from buffer");
-  });
-});
-
-// process namespace
-const processNsp = io.of("/process");
-processNsp.on("connection", (socket) => {
-  console.log("a user connected to process");
-  socket.on("data", (data) => {
-    console.log(data);
-    // broadcast to all clients in the namespace
-    processNsp.emit("data", data);
-  });
-  socket.on("disconnect", () => {
-    console.log("user disconnected from process");
-  });
-});
-
-// assembly namespace
-const assemblyNsp = io.of("/assembly");
-assemblyNsp.on("connection", (socket) => {
-  console.log("a user connected to assembly");
-  socket.on("data", (data) => {
-    console.log(data);
-    // broadcast to all clients in the namespace
-    assemblyNsp.emit("data", data);
-  });
-  socket.on("disconnect", () => {
-    console.log("user disconnected from assembly");
-  });
-});
-// sorting namespace
-const sortingNsp = io.of("/sorting");
-sortingNsp.on("connection", (socket) => {
-  console.log("a user connected to sorting");
-  socket.on("data", (data) => {
-    console.log(data);
-    // broadcast to all clients in the namespace
-    sortingNsp.emit("data", data);
-  });
-  socket.on("disconnect", () => {
-    console.log("user disconnected from sorting");
-  });
-});
-
-//server listen
-server.listen(8080, () => {
-  console.log("listening on *:8080");
+server.listen(process.env.PORT, () => {
+  console.log(`listening on *:${process.env.PORT}`);
 });

@@ -1,7 +1,7 @@
 import React from "react";
 import { STATIONS } from "../constants";
 import { createNewElement, getNoOfSteps, updateElement } from "../utills";
-import { useSocket } from "./socketContext";
+// import { useSocket } from "./socketContext";
 import { useWebSocket } from "./webSocketContext";
 
 const dataContext = React.createContext();
@@ -102,6 +102,16 @@ const DataProvider = ({ children }) => {
 
     const newData = [...data];
     const element = newData[elementIndex];
+
+    if (
+      step === 1 &&
+      !!element[station].step1 &&
+      !!element[station].step1.time
+    ) {
+      alert("No element found");
+      return;
+    }
+
     const updatedElement = updateElement(element, station, step, last);
     newData[elementIndex] = updatedElement;
     setData(newData);

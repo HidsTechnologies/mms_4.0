@@ -32,30 +32,37 @@ export const createNewElement = (id) => ({
   sorting: {},
 });
 
-// TODO - NEED More work on this function
 export const updateElement = (element, station, step, last) => {
   let updatedElement = { ...element };
+  let status = station === STATIONS.inspection ? getRandomBool() : true;
   if (step == 1) {
     updatedElement.currentStation = station;
     updatedElement.currentStep = 1;
     updatedElement[station] = {
-      status: true,
+      status,
       time: getCurrentTime(),
       step1: {
-        status: true,
+        status,
         time: getCurrentTime(),
       },
     };
   } else {
     updatedElement.currentStep = step;
     updatedElement[station][`step${step}`] = {
-      status: true,
+      status,
       time: getCurrentTime(),
     };
   }
+
   if (step == last) {
     updatedElement.nextStation = getNextStation(station);
   }
+
+  if (!status) {
+    updatedElement.nextStation = null;
+    updatedElement.currentStep = 0;
+  }
+
   return updatedElement;
 };
 
@@ -79,20 +86,14 @@ export const getNextStation = (currentStation) => {
 };
 
 export const getNoOfSteps = (station) => {
-  switch (station) {
-    case "feeder":
-      return 4;
-    case "inspection":
-      return 1;
-    case "buffer":
-      return 1;
-    case "process":
-      return 1;
-    case "assembly":
-      return 1;
-    case "sorting":
-      return 1;
-    default:
-      return 0;
-  }
+  return NoOfSteps[station];
+};
+
+let NoOfSteps = {
+  feeder: 4,
+  inspection: 1,
+  buffer: 4,
+  process: 4,
+  assembly: 1,
+  sorting: 2,
 };

@@ -31,7 +31,6 @@ wss.on("connection", (ws) => {
   clients.push(ws);
 
   ws.on("message", (data) => {
-    console.log(data);
     // broadcast to all clients
     wss.clients.forEach((client) => {
       if (client.readyState === ws.OPEN) {
@@ -42,7 +41,6 @@ wss.on("connection", (ws) => {
 
   ws.on("close", () => {
     clients.pop(ws);
-    console.log("user disconnected", clients.length);
   });
 });
 

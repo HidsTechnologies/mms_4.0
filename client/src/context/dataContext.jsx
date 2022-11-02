@@ -36,10 +36,13 @@ const DataProvider = ({ children }) => {
   //   sortingSocket,
   // } = useSocket();
 
-  const wss = useWebSocket();
+  const { wss, isConnected } = useWebSocket();
   // send message to server
   const sendMessage = (data) => {
-    console.log("sendMessage", data);
+    if (!isConnected) {
+      alert("Server is disconnected");
+      return;
+    }
     // switch (data.station) {
     //   case STATIONS.feeder:
     //     feederSocket.emit("data", data);
@@ -68,6 +71,10 @@ const DataProvider = ({ children }) => {
 
   //   funtions
   const addNewElement = () => {
+    if (!isConnected) {
+      alert("Server is disconnected");
+      return;
+    }
     let id = data.length + 1;
     const newElement = createNewElement(id);
     setData([...data, newElement]);
@@ -80,6 +87,10 @@ const DataProvider = ({ children }) => {
   };
 
   const handleStepsButton = (station, step) => {
+    if (!isConnected) {
+      alert("Server is disconnected");
+      return;
+    }
     let elementIndex = null;
     const last = getNoOfSteps(station);
     if (step === 1) {

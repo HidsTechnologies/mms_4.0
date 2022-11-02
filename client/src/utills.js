@@ -34,7 +34,8 @@ export const createNewElement = (id) => ({
 
 export const updateElement = (element, station, step, last) => {
   let updatedElement = { ...element };
-  let status = station === STATIONS.inspection ? getRandomBool() : true;
+  let status =
+    station === STATIONS.inspection && step === 2 ? getRandomBool() : true;
   if (step == 1) {
     updatedElement.currentStation = station;
     updatedElement.currentStep = 1;
@@ -61,6 +62,8 @@ export const updateElement = (element, station, step, last) => {
   if (!status) {
     updatedElement.nextStation = null;
     updatedElement.currentStep = 0;
+    updatedElement[station].status = status;
+    updatedElement.status = status;
   }
 
   return updatedElement;
@@ -91,9 +94,9 @@ export const getNoOfSteps = (station) => {
 
 let NoOfSteps = {
   feeder: 4,
-  inspection: 1,
-  buffer: 4,
+  inspection: 2,
+  buffer: 1,
   process: 4,
   assembly: 1,
-  sorting: 2,
+  sorting: 1,
 };

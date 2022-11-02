@@ -1,0 +1,23 @@
+namespace for respective stations
+
+feeder station - /feeder
+inspection station - /inspection
+buffer station - /buffer
+process station - /process
+assembly station - /assembly
+sorting station - /sorting
+
+
+you have to listen on event "data" for every station 
+you will receive json data 
+   {
+     step : Number, // 1
+     station : string, //feeder
+     elementType: String, //plastic
+     status: Bool, //true
+    }
+
+
+
+data : "station,step,elementType,status"
+ex - "feeder,1,plastic,true"
